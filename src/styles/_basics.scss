@@ -1,0 +1,19 @@
+html,
+body {
+  @apply min-h-screen text-base;
+}
+
+html {
+  @apply antialiased scroll-smooth;
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  font-variant-ligatures: none;
+  -webkit-font-variant-ligatures: none;
+  text-rendering: optimizeLegibility;
+  text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
+}
+
+a,
+span {
+  @apply inline-block;
+}

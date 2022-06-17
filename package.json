@@ -1,0 +1,28 @@
+{
+  "name": "frontend-mentor-vue-template",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "clean": "rm -rf ./dist",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "deploy": "bash ./deploy.sh"
+  },
+  "dependencies": {
+    "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.30",
+    "@types/tailwindcss": "^3.0.10",
+    "@vitejs/plugin-vue": "^2.3.1",
+    "autoprefixer": "^10.4.5",
+    "postcss": "^8.4.13",
+    "sass": "^1.51.0",
+    "tailwindcss": "^3.0.24",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.5",
+    "vite-svg-loader": "^3.3.0",
+    "vue-tsc": "^0.34.7"
+  }
+}
