@@ -1,0 +1,28 @@
+@mixin theme($theme) {
+  :root[data-theme='#{$theme}'] & {
+    @content;
+  }
+}
+
+@mixin scrollbar-thin() {
+  @apply overflow-auto;
+
+  // For Google Chrome
+  &::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-medium-grey bg-opacity-30 rounded-xl;
+  }
+
+  &::-webkit-scrollbar-track {
+    @apply bg-transparent rounded-xl;
+  }
+
+  // For Internet Explorer
+  & {
+    scrollbar-face-color: theme('colors.medium-grey');
+    scrollbar-track-color: theme('colors.transparent');
+  }
+}

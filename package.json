@@ -1,5 +1,5 @@
 {
-  "name": "frontend-mentor-vue-template",
+  "name": "kanban-task-management-web-app",
   "private": true,
   "version": "1.0.0",
   "scripts": {
@@ -10,11 +10,23 @@
     "deploy": "bash ./deploy.sh"
   },
   "dependencies": {
-    "vue": "^3.2.25"
+    "@headlessui/vue": "^1.6.4",
+    "dashify": "^2.0.0",
+    "nanoid": "^4.0.0",
+    "store2": "^2.13.2",
+    "vee-validate": "^4.5.11",
+    "vue": "^3.2.25",
+    "vue-router": "^4.0.16",
+    "vuedraggable-es": "^4.1.0",
+    "vuex": "^4.0.2",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@types/dashify": "^1.0.1",
+    "@types/nanoid": "^3.0.0",
     "@types/node": "^17.0.30",
     "@types/tailwindcss": "^3.0.10",
+    "@types/yup": "^0.29.14",
     "@vitejs/plugin-vue": "^2.3.1",
     "autoprefixer": "^10.4.5",
     "postcss": "^8.4.13",

@@ -1,6 +1,18 @@
 html,
 body {
-  @apply min-h-screen text-base;
+  @apply text-body-l font-medium;
+
+  @include theme(light) {
+    @apply bg-light-grey text-black;
+  }
+
+  @include theme(dark) {
+    @apply bg-very-dark-grey text-white;
+  }
+}
+
+*:focus {
+  @apply outline-none ring-2 ring-inset ring-main-purple;
 }
 
 html {
