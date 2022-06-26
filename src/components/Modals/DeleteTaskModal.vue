@@ -31,12 +31,12 @@ const store = useStore();
 const props = defineProps<{
   task: Task;
   isOpen: boolean;
-  onCloseModal(): void;
+  onCloseModal?(): void;
 }>();
 
 const deleteTask = () => {
   store.commit('deleteTask', props.task);
-  props.onCloseModal();
+  props.onCloseModal?.();
 };
 </script>
 

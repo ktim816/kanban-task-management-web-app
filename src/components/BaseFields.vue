@@ -27,7 +27,7 @@ import IconButton from '@components/IconButton.vue';
 
 interface Props {
   label: string;
-  fields: FieldArrayContext['fields']['value'];
+  fields: FieldArrayContext<any>['fields']['value'];
   onRemoveField?: FieldArrayContext['remove'];
 }
 

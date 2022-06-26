@@ -43,7 +43,7 @@ import {getRandomColor} from '@helpers/common';
 
 const props = defineProps<{
   isOpen: boolean;
-  onCloseModal(): void;
+  onCloseModal?(): void;
 }>();
 
 const store = useStore();
@@ -61,9 +61,9 @@ const schema = yup.object().shape({
   name: yup.string().required().label('Name'),
 });
 
-const handleSubmit = (values: Column) => {
-  store.commit('createColumn', values);
-  props.onCloseModal();
+const handleSubmit = (values: any) => {
+  store.commit('createColumn', values as Column);
+  props.onCloseModal?.();
 };
 </script>
 

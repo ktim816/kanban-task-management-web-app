@@ -7,7 +7,7 @@
   >
     <Form
       :class="$style.form"
-      :initial-values="initialValues"
+      :initial-values="initialValues || {}"
       :validation-schema="schema"
       @submit="handleSubmit"
     >
@@ -58,7 +58,7 @@ import {createColumn, createBoard} from '@helpers/board';
 const props = defineProps<{
   isOpen: boolean;
   isEditable?: boolean;
-  onCloseModal(): void;
+  onCloseModal?(): void;
 }>();
 
 const store = useStore();
@@ -94,18 +94,18 @@ const schema = yup.object().shape({
   ),
 });
 
-const handleSubmit = (values: Board) => {
+const handleSubmit = (values: any) => {
   const eventName = props.isEditable ? 'editBoard' : 'createBoard';
 
   store.commit(eventName, {
     router,
     board: {
-      ...values,
+      ...(values as Board),
       path: `/${dashify(values.name)}`,
     },
   });
 
-  props.onCloseModal();
+  props.onCloseModal?.();
 };
 </script>
 

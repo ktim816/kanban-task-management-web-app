@@ -1,6 +1,6 @@
 <template>
   <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog as="div" @close="onCloseModal" :class="$style.wrapper">
+    <Dialog as="div" @close="onCloseModal?.()" :class="$style.wrapper">
       <TransitionChild
         as="template"
         enter="duration-300 ease-out"
@@ -77,7 +77,7 @@ const props = defineProps<{
   titleClass?: string;
   panelClass?: string;
   description?: string;
-  onCloseModal(): void;
+  onCloseModal?(): void;
 }>();
 </script>
 

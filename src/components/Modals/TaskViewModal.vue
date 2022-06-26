@@ -14,7 +14,7 @@
     <Form
       v-slot="{values}"
       :class="$style.form"
-      :initial-values="initialValues"
+      :initial-values="initialValues || {}"
       @submit="handleSubmit"
     >
       <FieldArray
@@ -25,13 +25,13 @@
         <BaseFields
           :fields="fields"
           v-slot="{idx}"
-          :label="`Subtasks (${
-            fields.filter((_field) => _field.value.isCompleted).length
-          } of ${fields.length})`"
+          :label="`Subtasks (${getCompletedSubtasks(fields).length} of ${
+            fields.length
+          })`"
         >
           <BaseCheckbox
-            :key="fields[idx].value.id"
-            :label="fields[idx].value.title"
+            :key="getSubtask(fields[idx].value, 'id')"
+            :label="getSubtask(fields[idx].value, 'title')"
             :name="`subtasks[${idx}].isCompleted`"
           />
         </BaseFields>
@@ -55,7 +55,13 @@ import dashify from 'dashify';
 import {nanoid} from 'nanoid';
 import {createSubtask} from '@helpers/board';
 import {computed, defineProps, onMounted, ref, watch} from 'vue';
-import {Form, FieldArray} from 'vee-validate';
+import {
+  Form,
+  FieldArray,
+  FieldArrayContext,
+  FieldContext,
+  FieldEntry,
+} from 'vee-validate';
 import BaseFields from '@components/BaseFields.vue';
 import TextField from '@components/TextField.vue';
 import BaseModal from '@components/BaseModal.vue';
@@ -72,9 +78,9 @@ import BaseDropdown from '@components/BaseDropdown.vue';
 interface Props {
   task: Task;
   isOpen: boolean;
-  onCloseModal(): void;
-  onEditTask(): void;
-  onDeleteTask(): void;
+  onCloseModal?(): void;
+  onEditTask?(): void;
+  onDeleteTask?(): void;
 }
 
 const props = defineProps<Props>();
@@ -108,12 +114,22 @@ store.watch(
   {immediate: true}
 );
 
+const getSubtask = (field: Readonly<any>, prop: keyof Subtask) => {
+  return field[prop];
+};
+
+const getCompletedSubtasks = (
+  subtasks: FieldArrayContext<any>['fields']['value']
+) => {
+  return subtasks.filter((subtask) => subtask.value.isCompleted);
+};
+
 const handleSubmit = (values: any) => {
   store.commit('editTask', {
     oldTask: props.task,
     newTask: {
       ...props.task,
-      ...values,
+      ...(values as Task),
     },
   });
 };

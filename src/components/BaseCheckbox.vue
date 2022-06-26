@@ -60,9 +60,7 @@ watch(value, (newValue) => {
 watch(
   () => props.modelValue,
   (newModel) => {
-    if (checked) {
-      checked.value = newModel as boolean;
-    }
+    value.value = newModel as boolean;
   }
 );
 </script>

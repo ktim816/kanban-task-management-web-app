@@ -7,7 +7,7 @@
   >
     <Form
       :class="$style.form"
-      :initial-values="initialValues"
+      :initial-values="initialValues || {}"
       :validation-schema="schema"
       @submit="handleSubmit"
     >
@@ -85,7 +85,7 @@ interface Props {
   task?: Task;
   column?: Column;
   isOpen: boolean;
-  onCloseModal(): void;
+  onCloseModal?(): void;
 }
 
 const props = defineProps<Props>();
@@ -129,22 +129,22 @@ const schema = yup.object().shape({
   }),
 });
 
-const handleSubmit = (values: Task) => {
+const handleSubmit = (values: any) => {
   if (props.task) {
     store.commit('editTask', {
       oldTask: props.task,
-      newTask: values,
+      newTask: values as Task,
     });
   } else {
     store.commit('createTask', {
-      ...values,
+      ...(values as Task),
       ...(props.column && {
         status: props.column.name,
       }),
     });
   }
 
-  props.onCloseModal();
+  props.onCloseModal?.();
 };
 </script>
 

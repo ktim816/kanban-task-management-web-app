@@ -15,7 +15,7 @@
       <BaseButton fix-width priority="destructive" @click="deleteBoard"
         >Delete</BaseButton
       >
-      <BaseButton fix-width priority="secondary" @click="onCloseModal"
+      <BaseButton fix-width priority="secondary" @click="onCloseModal?.()"
         >Cancel</BaseButton
       >
     </div>
@@ -34,7 +34,7 @@ const router = useRouter();
 
 const props = defineProps<{
   isOpen: boolean;
-  onCloseModal(): void;
+  onCloseModal?(): void;
 }>();
 
 const deleteBoard = () => {
@@ -43,7 +43,7 @@ const deleteBoard = () => {
     board: store.state.currentBoard,
   });
 
-  props.onCloseModal();
+  props.onCloseModal?.();
 };
 </script>
 
