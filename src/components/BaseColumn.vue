@@ -1,77 +1,122 @@
 <template>
   <div
-    :tabindex="isEmpty ? undefined : 0"
-    :role="isEmpty ? undefined : 'button'"
+    :tabindex="!column ? undefined : 0"
+    :role="!column ? undefined : 'button'"
     :class="[
       $style.wrapper,
       {
-        [$style['wrapper--full']]: !isEmpty,
+        [$style['wrapper--full']]: column,
       },
+      $props.class,
     ]"
   >
     <div v-if="column" :class="$style.header">
-      <span :class="$style.dot" :style="{backgroundColor: column?.color}" />
-      <h3 :class="$style.title">
-        {{ column?.name }} ({{ column?.tasks.length }})
-      </h3>
+      <div class="relative pl-7">
+        <span :class="$style.dot" :style="{backgroundColor: column?.color}" />
+        <h3 :class="$style.title">
+          {{ column?.name }} ({{ column?.tasks.length }})
+        </h3>
+      </div>
+      <BaseDropdown :items="options">
+        <IconButton
+          size="s"
+          priority="secondary"
+          :class="$style.options"
+          icon="icon-horizontal-ellipsis"
+        />
+      </BaseDropdown>
     </div>
 
-    <template v-if="!isEmpty">
-      <div v-if="column?.tasks.length" :class="$style.tasks">
-        <BaseTask :key="task.id" :task="task" v-for="task in column.tasks" />
-      </div>
-
-      <div
-        role="button"
-        :tabindex="0"
-        :class="[$style.new, 'mt-6']"
-        @click="isTaskModalOpen = true"
+    <template v-if="column">
+      <draggable
+        :group="group"
+        item-key="id"
+        :list="column?.tasks"
+        :class="$style.tasks"
       >
-        <span>+ New Task</span>
-      </div>
+        <template #item="{element}">
+          <BaseTask :task="element" />
+        </template>
+      </draggable>
+
+      <ColumnModal
+        :column="column"
+        :is-open="isModalOpen.editColumn"
+        @close-modal="isModalOpen.editColumn = false"
+      />
+
+      <DeleteColumnModal
+        :column="column"
+        :is-open="isModalOpen.deleteColumn"
+        @close-modal="isModalOpen.deleteColumn = false"
+      />
     </template>
 
     <div
       v-else
       role="button"
       :tabindex="0"
-      :class="[$style.new, 'mt-10']"
+      :class="[$style.new, 'mt-[3.25rem]']"
       @click="onCreateColumn"
     >
       <span>+ New Column</span>
     </div>
-
-    <TaskModal
-      :column="column"
-      :is-open="isTaskModalOpen"
-      @close-modal="isTaskModalOpen = false"
-    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import {Column} from '@interfaces';
-import {defineProps, ref} from 'vue';
+import {computed, defineProps, ref} from 'vue';
+import draggable from 'vuedraggable-es';
 import BaseTask from '@components/BaseTask.vue';
-import TaskModal from './Modals/TaskModal.vue';
-import IconButton from './IconButton.vue';
+import IconButton from '@components/IconButton.vue';
+import BaseDropdown from '@components/BaseDropdown.vue';
+import ColumnModal from '@components/Modals/ColumnModal.vue';
+import DeleteColumnModal from '@components/Modals/DeleteColumnModal.vue';
 
 interface Props {
+  group?: string;
   column?: Column;
-  isEmpty?: boolean;
   onCreateColumn?(): void;
 }
 
-const isTaskModalOpen = ref(false);
 const props = defineProps<Props>();
+const isModalOpen = ref({
+  editColumn: false,
+  deleteColumn: false,
+});
+
+const log = (event: any) => {
+  console.log(event);
+};
+
+const options = [
+  {
+    name: 'Edit Column',
+    onClick: () => {
+      isModalOpen.value.editColumn = true;
+    },
+  },
+  {
+    name: 'Delete Column',
+    class: 'text-red',
+    onClick: () => {
+      isModalOpen.value.deleteColumn = true;
+    },
+  },
+];
 </script>
 
 <style lang="scss" module>
 .wrapper {
-  @apply rounded-md p-4;
+  @apply rounded-md p-3.5;
 
   &--full {
     &:hover {
+      .options {
+        @apply visible;
+      }
+
       @include theme(light) {
         @apply bg-lines-light;
       }
@@ -86,13 +131,13 @@ const props = defineProps<Props>();
   @apply text-heading-s text-medium-grey font-bold uppercase;
 }
 .tasks {
-  @apply mt-6;
-}
-.tasks {
-  @apply space-y-5;
+  @apply mt-6 space-y-5 h-full;
 }
 .header {
-  @apply relative pl-7;
+  @apply flex items-center justify-between;
+}
+.options {
+  @apply invisible rounded-full;
 }
 .dot {
   @apply absolute top-0 left-0 rounded-full w-[0.9375rem] h-[0.9375rem];

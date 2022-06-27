@@ -2,13 +2,13 @@
   <BaseModal
     :is-open="isOpen"
     title-class="text-red"
-    title="Delete this task?"
+    title="Delete this column?"
     panel-class="max-w-[30rem]"
-    :description="`Are you sure you want to delete the ‘${task.title}’ task and its subtasks? This action action cannot be reversed.`"
+    :description="`Are you sure you want to delete the ‘${column.name}’ column and its tasks? This action action cannot be reversed.`"
     @close-modal="onCloseModal"
   >
     <div :class="$style.buttons">
-      <BaseButton fix-width priority="destructive" @click="deleteTask"
+      <BaseButton fix-width priority="destructive" @click="deleteColumn"
         >Delete</BaseButton
       >
       <BaseButton fix-width priority="secondary" @click="onCloseModal?.()"
@@ -19,23 +19,22 @@
 </template>
 
 <script lang="ts" setup>
+import {Column} from '@interfaces';
 import {defineProps, ref} from 'vue';
+import useStore from '@composables/store';
 import BaseModal from '@components/BaseModal.vue';
 import BaseButton from '@components/BaseButton.vue';
-import useStore from '@composables/store';
-import {useRouter} from 'vue-router';
-import {Task} from '@interfaces';
 
 const store = useStore();
 
 const props = defineProps<{
-  task: Task;
+  column: Column;
   isOpen: boolean;
   onCloseModal?(): void;
 }>();
 
-const deleteTask = () => {
-  store.commit('deleteTask', props.task);
+const deleteColumn = () => {
+  store.commit('deleteColumn', props.column);
   props.onCloseModal?.();
 };
 </script>

@@ -1,19 +1,21 @@
 <template>
   <BaseModal
     :is-open="isOpen"
-    title="Add New Column"
     panel-class="max-w-md"
     @close-modal="onCloseModal"
+    :title="column ? 'Edit Column' : 'Add New Column'"
   >
     <Form
       :class="$style.form"
-      :initial-values="initialValues"
-      :validation-schema="schema"
       @submit="handleSubmit"
+      :validation-schema="schema"
+      :initial-values="initialValues || {}"
     >
       <TextField name="name" label="Name" placeholder="e.g. Todo" />
       <div :class="$style.buttons">
-        <BaseButton fix-width>Create Column</BaseButton>
+        <BaseButton fix-width>{{
+          column ? 'Save Changes' : 'Create Column'
+        }}</BaseButton>
       </div>
     </Form>
   </BaseModal>
@@ -40,8 +42,10 @@ import useStore from '@composables/store';
 import {useRouter} from 'vue-router';
 import dashify from 'dashify';
 import {getRandomColor} from '@helpers/common';
+import {createColumn} from '@helpers/board';
 
 const props = defineProps<{
+  column?: Column;
   isOpen: boolean;
   onCloseModal?(): void;
 }>();
@@ -49,20 +53,23 @@ const props = defineProps<{
 const store = useStore();
 const router = useRouter();
 
-const defaultColumn: Column = {
-  id: nanoid(),
-  color: getRandomColor(),
-  name: '',
-  tasks: [],
-};
+const initialValues = ref<Column | null>(null);
 
-const initialValues = ref(defaultColumn);
+store.watch(
+  (state) => state,
+  () => {
+    initialValues.value = props.column || createColumn();
+  },
+  {immediate: true, deep: true}
+);
+
 const schema = yup.object().shape({
   name: yup.string().required().label('Name'),
 });
 
 const handleSubmit = (values: any) => {
-  store.commit('createColumn', values as Column);
+  const eventName = props.column ? 'editColumn' : 'createColumn';
+  store.commit(eventName, values as Column);
   props.onCloseModal?.();
 };
 </script>

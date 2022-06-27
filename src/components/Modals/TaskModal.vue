@@ -110,7 +110,7 @@ store.watch(
   () => {
     initialValues.value = props.task || defaultTask;
   },
-  {immediate: true}
+  {immediate: true, deep: true}
 );
 
 const schema = yup.object().shape({

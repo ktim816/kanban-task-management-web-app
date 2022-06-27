@@ -16,7 +16,7 @@
     </div>
   </div>
   <IconButton
-    size="l"
+    size="xl"
     :class="[
       $style.showSidebar,
       {

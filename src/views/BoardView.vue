@@ -9,19 +9,34 @@
           <div class="text-heading-l font-bold text-medium-grey">
             This board is empty. Create a new column to get started.
           </div>
-          <BaseButton size="l">+ Add New Column</BaseButton>
+          <BaseButton size="l" @click="isColumnModalOpen = true"
+            >+ Add New Column</BaseButton
+          >
         </div>
       </div>
 
-      <div v-else :class="$style.columns">
+      <div v-else class="flex p-2">
+        <draggable
+          item-key="id"
+          group="columns"
+          class="flex"
+          :list="store.state.currentBoard?.columns"
+        >
+          <template #item="{element}">
+            <BaseColumn
+              :class="$style.column"
+              group="tasks"
+              :column="element"
+            />
+          </template>
+        </draggable>
         <BaseColumn
-          :key="column.id"
-          :column="column"
-          v-for="column in store.state.currentBoard?.columns"
+          :class="$style.column"
+          @create-column="isColumnModalOpen = true"
         />
-        <BaseColumn is-empty @create-column="isColumnModalOpen = true" />
       </div>
     </div>
+
     <ColumnModal
       :is-open="isColumnModalOpen"
       @close-modal="isColumnModalOpen = false"
@@ -32,6 +47,7 @@
 <script lang="ts" setup>
 import {ref} from 'vue';
 import useStore from '@composables/store';
+import draggable from 'vuedraggable-es';
 import BaseButton from '@components/BaseButton.vue';
 import IconButton from '@components/IconButton.vue';
 import BaseColumn from '@components/BaseColumn.vue';
@@ -52,11 +68,7 @@ const isColumnModalOpen = ref(false);
 .empty {
   @apply py-8 w-full flex items-center justify-center text-center h-full;
 }
-.columns {
-  @apply flex p-2;
-
-  > * {
-    @apply w-full flex flex-col min-w-[17.5rem] max-w-[17.5rem];
-  }
+.column {
+  @apply flex flex-col w-[19.5rem];
 }
 </style>

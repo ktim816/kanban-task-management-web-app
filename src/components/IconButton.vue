@@ -17,12 +17,12 @@ import DynamicIcon from './DynamicIcon.vue';
 
 interface Props {
   icon: string;
-  size?: 's' | 'l';
+  size?: 's' | 'm' | 'l' | 'xl';
   priority?: 'primary' | 'secondary';
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  size: 's',
+  size: 'm',
   priority: 'primary',
 });
 </script>
@@ -52,10 +52,18 @@ button.wrapper {
 
   // Size
   &--s {
+    @apply w-7 h-7;
+  }
+
+  &--m {
     @apply w-10 h-10;
   }
 
   &--l {
+    @apply w-10 h-10;
+  }
+
+  &--xl {
     @apply w-12 h-12;
   }
 }

@@ -111,7 +111,7 @@ store.watch(
       subtasks: props.task.subtasks,
     };
   },
-  {immediate: true}
+  {immediate: true, deep: true}
 );
 
 const getSubtask = (field: Readonly<any>, prop: keyof Subtask) => {

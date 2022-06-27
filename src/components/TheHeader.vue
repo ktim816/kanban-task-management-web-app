@@ -24,6 +24,7 @@
         >
         <BaseDropdown :items="dropItems">
           <IconButton
+            size="l"
             priority="secondary"
             class="rounded-full"
             icon="icon-vertical-ellipsis"

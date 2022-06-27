@@ -2,9 +2,9 @@ import storage from 'store2';
 import {nanoid} from 'nanoid';
 import {InjectionKey} from 'vue';
 import {Router} from 'vue-router';
-import {getRandomColor, last} from '@helpers/common';
 import {createStore, Store} from 'vuex';
 import {Board, Column, Task} from '@interfaces';
+import {filterById, findById, getRandomColor, last} from '@helpers/common';
 
 export interface State {
   boards: Board[];
@@ -565,7 +565,7 @@ if (!storage.has('state')) {
 
 export const key: InjectionKey<Store<State>> = Symbol();
 export const store = createStore<State>({
-  strict: true,
+  strict: false,
 
   state: storage.get('state') || initialState,
 
@@ -624,9 +624,7 @@ export const store = createStore<State>({
         router: Router;
       }
     ) {
-      const boardIdx = state.boards.findIndex(
-        (_board) => _board.id === board.id
-      );
+      const boardIdx = state.boards.findIndex(findById(board));
 
       if (boardIdx === -1) return;
 
@@ -634,7 +632,7 @@ export const store = createStore<State>({
         ...board,
         id: nanoid(),
       });
-      // state.currentBoard = board;
+
       router.replace(board.path);
     },
 
@@ -648,18 +646,41 @@ export const store = createStore<State>({
         router: Router;
       }
     ) {
-      state.boards = state.boards.filter((_board) => _board.id !== board.id);
+      state.boards = state.boards.filter(filterById(board));
       const lastBoard = last(state.boards);
       state.currentBoard = lastBoard;
       router.replace(lastBoard.path);
     },
 
     createColumn(state, column: Column) {
-      state.currentBoard?.columns.push(column);
+      if (!state.currentBoard) return;
+
+      state.currentBoard.columns.push(column);
+    },
+
+    deleteColumn(state, column: Column) {
+      if (!state.currentBoard) return;
+
+      const columnIdx = state.currentBoard.columns.findIndex(findById(column));
+
+      state.currentBoard.columns.splice(columnIdx, 1);
+    },
+
+    editColumn(state, column: Column) {
+      if (!state.currentBoard) return;
+
+      const columnIdx = state.currentBoard.columns.findIndex(findById(column));
+
+      state.currentBoard.columns.splice(columnIdx, 1, {
+        ...column,
+        id: nanoid(),
+      });
     },
 
     createTask(state, task: Task) {
-      const currentColumn = state.currentBoard?.columns.find((column) => {
+      if (!state.currentBoard) return;
+
+      const currentColumn = state.currentBoard.columns.find((column) => {
         return column.name === task.status;
       });
 
@@ -688,9 +709,7 @@ export const store = createStore<State>({
 
       if (!oldColumn || !newColumn) return;
 
-      const oldTaskIdx = oldColumn.tasks.findIndex((task) => {
-        return task.id === oldTask.id;
-      });
+      const oldTaskIdx = oldColumn.tasks.findIndex(findById(oldTask));
 
       if (oldTaskIdx === -1) return;
 
@@ -710,9 +729,7 @@ export const store = createStore<State>({
 
       if (!currentColumn) return;
 
-      const taskIdx = currentColumn.tasks.findIndex((_task) => {
-        return _task.id === task.id;
-      });
+      const taskIdx = currentColumn.tasks.findIndex(findById(task));
 
       if (taskIdx === -1) return;
 
